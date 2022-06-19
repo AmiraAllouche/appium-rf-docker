@@ -103,6 +103,12 @@ RUN curl -sL https://deb.nodesource.com/setup_12.x | bash && \
 #================================
 RUN wget -nv -O RemoteAppiumManager.jar "https://github.com/AppiumTestDistribution/ATD-Remote/releases/download/${ATD_VERSION}/RemoteAppiumManager-${ATD_VERSION}.jar"
 
+
+#================================
+# Robot framework installation
+#================================
+RUN pip3 install robotframework==5.0.1 && pip3 install robotframework-appiumlibrary==1.6.3
+
 #==================================
 # Fix Issue with timezone mismatch
 #==================================
