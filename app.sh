@@ -1,6 +1,6 @@
 #!/bin/bash
 
-IMAGE="appium/appium"
+IMAGE="amira336/rf-appium"
 
 if [ -z "$1" ]; then
     read -p "Task (test|build|push) : " TASK
@@ -16,7 +16,7 @@ fi
 
 function build() {
     echo "Build docker image with version \"${VER}\""
-	docker build -t ${IMAGE}:${VER} -f Appium/Dockerfile Appium
+	docker build -t ${IMAGE}:${VER} -f Appium/Dockerfile rf-appium
     docker images
 }
 
