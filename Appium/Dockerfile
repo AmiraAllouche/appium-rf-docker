@@ -108,7 +108,7 @@ RUN wget -nv -O RemoteAppiumManager.jar "https://github.com/AppiumTestDistributi
 # Robot framework installation
 #================================
 RUN apt install -y python3-pip && pip3 install robotframework==5.0.1 && pip3 install robotframework-appiumlibrary==1.6.3 && \
-    pip3 install robotframework-seleniumlibrary && pip3 install --upgrade AppiumLibrary
+    pip3 install --upgrade pip && pip3 install robotframework-seleniumlibrary && pip3 install --upgrade AppiumLibrary
 
 #==================================
 # Fix Issue with timezone mismatch
