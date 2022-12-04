@@ -103,14 +103,19 @@ RUN curl -sL https://deb.nodesource.com/setup_12.x | bash && \
 #================================
 RUN wget -nv -O RemoteAppiumManager.jar "https://github.com/AppiumTestDistribution/ATD-Remote/releases/download/${ATD_VERSION}/RemoteAppiumManager-${ATD_VERSION}.jar"
 
+#================================
+# Agent.jar installation
+#================================
+RUN mkdir -p /home/jenkins/agent
+COPY remoting-3028.va_a_436db_35078.jar /home/jenkins/agent/
 
 #================================
 # Robot framework installation
 #================================
 RUN apt install -y python3-pip && \
+    pip3 install --upgrade pip && \
     pip3 install robotframework==5.0.1 && \   
     pip3 install robotframework-appiumlibrary && \
-    pip3 install --upgrade pip && \
     pip3 install --upgrade robotframework-appiumlibrary
 #pip3 install robotframework-seleniumlibrary && \
 #==================================
@@ -145,6 +150,6 @@ RUN chmod +x /root/entry_point.sh && \
     chmod +x /root/wireless_autoconnect.sh
 
 #========================================
-# Run xvfb and appium server
+# Run xvfb, appium server and agent.jar
 #========================================
-CMD /root/wireless_autoconnect.sh && /root/entry_point.sh
+CMD /root/wireless_autoconnect.sh && /root/entry_point.sh && java -jar /home/jenkins/agent/remoting-3028.va_a_436db_35078.jar -noReconnect -noKeepAlive -agentLog /home/jenkins/agent/agent.log
