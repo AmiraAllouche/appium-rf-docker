@@ -104,11 +104,19 @@ RUN curl -sL https://deb.nodesource.com/setup_12.x | bash && \
 RUN wget -nv -O RemoteAppiumManager.jar "https://github.com/AppiumTestDistribution/ATD-Remote/releases/download/${ATD_VERSION}/RemoteAppiumManager-${ATD_VERSION}.jar"
 
 #================================
-# Agent.jar installation
+# Install a basic SSH server
 #================================
-RUN mkdir -p /home/jenkins/agent
-COPY remoting-3028.va_a_436db_35078.jar /home/jenkins/agent/
+RUN apt-get install -qy openssh-server && \
+    sed -i 's|session    required     pam_loginuid.so|session    optional     pam_loginuid.so|g' /etc/pam.d/sshd && \
+    mkdir -p /var/run/sshd && \
+# Add user jenkins to the image
+    adduser --quiet jenkins && \
+# Set password for the jenkins user (you may want to alter this).
+    echo "jenkins:jenkins" | chpasswd
 
+# Copy authorized keys
+COPY .ssh/authorized_keys /home/jenkins/.ssh/authorized_keys
+RUN    chown -R jenkins:jenkins /home/jenkins/.ssh/
 #================================
 # Robot framework installation
 #================================
@@ -134,6 +142,7 @@ RUN echo "${TZ}" > /etc/timezone
 #===============
 EXPOSE 4723
 EXPOSE 4567
+EXPOSE 22
 
 #====================================================
 # Scripts to run appium and connect to Selenium Grid
@@ -152,4 +161,4 @@ RUN chmod +x /root/entry_point.sh && \
 #========================================
 # Run xvfb, appium server and agent.jar
 #========================================
-CMD /root/wireless_autoconnect.sh && /root/entry_point.sh && java -jar /home/jenkins/agent/remoting-3028.va_a_436db_35078.jar -noReconnect -noKeepAlive -agentLog /home/jenkins/agent/agent.log
+CMD /root/wireless_autoconnect.sh && /root/entry_point.sh && /usr/sbin/sshd -D
